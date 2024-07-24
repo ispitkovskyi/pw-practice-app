@@ -1,4 +1,4 @@
-import {test} from '@playwright/test'
+import {test, expect} from '@playwright/test'
 
 // Before test (this is a Hook)
 test.beforeEach(async({page}) => {
@@ -62,11 +62,11 @@ test('Locating child elements', async({page}) => {
 })
 
 test('Locating parent elements', async({page}) => {
-    await page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"}).first().click()
-    await page.locator('nb-card', {has: page.locator('#inputEmail1')}).getByRole('textbox', {name: "Email"}).first().click()
+    await page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"}).click()
+    await page.locator('nb-card', {has: page.locator('#inputEmail1')}).getByRole('textbox', {name: "Email"}).click()
     
-    await page.locator('nb-card').filter({hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"}).first().click()
-    await page.locator('nb-card').filter({has: page.locator('.status-danger')}).getByRole('textbox', {name: "Password"}).first().click()
+    await page.locator('nb-card').filter({hasText: "Using the Grid"}).getByRole('textbox', {name: "Email"}).click()
+    await page.locator('nb-card').filter({has: page.locator('.status-danger')}).getByRole('textbox', {name: "Password"}).click()
 
     await page.locator('nb-card')
             .filter({has: page.locator('nb-checkbox')})
@@ -75,4 +75,19 @@ test('Locating parent elements', async({page}) => {
             .click()
 
     await page.locator(':text-is("Using the Grid")').locator('..').getByRole('textbox', {name: "Email"}).click()
+})
+
+test('Reusing locators', async({page}) => {
+    const basicForm = page.locator('nb-card', {hasText: "Basic form"})
+    const emailField = basicForm.getByRole('textbox', {name: "Email"})
+    const passwordField = basicForm.getByRole('textbox', {name: "Password"})
+    const checkoutCheckbox = basicForm.locator('nb-checkbox')
+
+    await emailField.fill('test@test.com')
+    await passwordField.fill('Welcome123')
+    await checkoutCheckbox.click()
+    await basicForm.getByRole('button').click()
+
+    await expect(emailField).toHaveValue('test@test.com')
+    await expect(checkoutCheckbox).toBeTruthy()
 })
