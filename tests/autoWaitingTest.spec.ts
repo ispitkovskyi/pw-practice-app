@@ -1,9 +1,10 @@
 import {test, expect} from '@playwright/test'
 
 // Before test (this is a Hook)
-test.beforeEach(async({page}) => {
+test.beforeEach(async({page}/*, testInfo*/) => {
     await page.goto('http://uitestingplayground.com/ajax')
     await page.getByText('Button Triggering AJAX Request').click()
+    // testInfo.setTimeout(testInfo.timeout + 2000)
 })
 
 // Testing auto-waiting with http://uitestingplayground.com/ajax site
@@ -62,4 +63,10 @@ test.describe('alternative waits', () => {
         const text2 = await successButton.allTextContents()
         expect.soft(text2).toContain('Data loaded with AJAX get request.') 
     })
+})
+
+test('Timeouts demo', async ({page}) => {
+    test.slow()
+    const successButton = page.locator('.bg-success')
+    await successButton.click()
 })
