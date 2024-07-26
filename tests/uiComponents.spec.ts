@@ -74,7 +74,7 @@ test('checkboxes', async({page}) => {
 test('lists and dropdowns', async({page}) => {
     // const dropDownMenu = page.getByRole('button', {name: 'Light'})
     const dropDownMenu = page.locator('ngx-header nb-select')
-    await dropDownMenu.click();
+    await dropDownMenu.click()
 
     page.getByRole('list') // when the list has UL tag
     page.getByRole('listitem') //when the list has LI tag
@@ -83,4 +83,37 @@ test('lists and dropdowns', async({page}) => {
     const optionList = page.locator('nb-option-list nb-option')
     await expect(optionList).toHaveText(['Light', 'Dark', 'Cosmic', 'Corporate'])
     await optionList.filter({hasText: 'Cosmic'}).click()
+
+    // assert page background color
+    const header = page.locator("nb-layout-header")
+    await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+
+    // assert page background color for ALL possible items in the list
+    const colors = {
+        "Light": "rgb(255, 255, 255)",
+        "Dark": "rgb(34, 43, 69)",
+        "Cosmic": "rgb(50, 50, 89)",
+        "Corporate": "rgb(255, 255, 255)"
+    }
+    
+    for(const color in colors) {
+        await dropDownMenu.click()
+        await optionList.filter({hasText: color}).click()
+        await expect(header).toHaveCSS('background-color', colors[color])
+    }
+})
+
+test('tooltips', async({page}) => {
+    await page.getByText('Modal & Overlays').click()
+    await page.getByText('Tooltip').click()
+
+    const tooltipPlacementsCard = page.locator('nb-card', {hasText: 'Tooltip Placements'})
+    await tooltipPlacementsCard.getByRole('button', {name: 'Top'}).hover()
+
+    // const tooltip = page.getByRole('tooltip', {name: 'This is a tooltip'}) // work ONLY if you have a role tooltip created
+    const tooltip = page.locator('nb-tooltip', {hasText: 'This is a tooltip'})
+    await expect(tooltip).toContainText('This is a tooltip')
+    // or
+    const tooltipText = await tooltip.textContent()
+    expect(tooltipText).toEqual('This is a tooltip')
 })
