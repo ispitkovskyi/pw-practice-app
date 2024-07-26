@@ -117,3 +117,21 @@ test('tooltips', async({page}) => {
     const tooltipText = await tooltip.textContent()
     expect(tooltipText).toEqual('This is a tooltip')
 })
+
+test('dialog boxes', async({page}) => {
+    await page.getByText('Tables & Data').click()
+    await page.getByText('Smart Table').click()
+
+    // create a listener for a dialog, so it wouldn't be closed immediately
+    // when dialog is invoked, this listener will work
+    page.on('dialog', dialog => {
+        expect(dialog.message()).toEqual('Are you sure you want to delete?')
+        //close dialog (NOT cancel)
+        dialog.accept()
+    })
+
+    await page.getByRole('table').locator('tr', {hasText: "mdo@gmail.com"}).locator('.nb-trash').click()
+    
+    //assert that the 1st row in the table does NOT contain the deleted email
+    await expect(page.getByRole('table').locator('tr').first()).not.toHaveText("mdo@gmail.com")
+})
