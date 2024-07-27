@@ -131,7 +131,37 @@ test('dialog boxes', async({page}) => {
     })
 
     await page.getByRole('table').locator('tr', {hasText: "mdo@gmail.com"}).locator('.nb-trash').click()
-    
+
     //assert that the 1st row in the table does NOT contain the deleted email
     await expect(page.getByRole('table').locator('tr').first()).not.toHaveText("mdo@gmail.com")
+})
+
+test('web tables part 1', async ({page}) => {
+    await page.getByText('Tables & Data').click()
+    await page.getByText('Smart Table').click()
+    
+    //1 get the row by any text in this row
+    const targetRow1 = page.getByRole('table').getByRole('row', {name: "twitter@outlook.com"})
+    await targetRow1.locator('.nb-edit').click()
+    
+    // because in edit mode, the text value in a cell is reflected in the 'placeholder' attribute, need such locator:
+    const ageFieldInEditMode = page.getByRole('table').locator('input-editor').getByPlaceholder('Age')
+    await ageFieldInEditMode.clear()
+    await ageFieldInEditMode.fill('35')
+    await page.locator('.nb-checkmark').click()
+
+    // select a row by ID=11 on page #2
+    await page.locator("nav[class*='ng2-smart-pagination-nav']").getByText('2').click()
+    const targetRowById = page.getByRole('table')
+                                .getByRole('row', {name: '11'}) // returns 2 rows with text '11'
+                                .filter({has: page.locator('td') // returns all cells/columns for each of these rows
+                                    .nth(1) // we take only cells/columns #2 of each of these rows
+                                    .getByText('11')}) //returns only row, whose cell/column #2 contains text '11'
+    await targetRowById.locator('.nb-edit').click()
+
+    const emailFieldInEditMode = page.getByRole('table').locator('input-editor').getByPlaceholder('E-mail')
+    await emailFieldInEditMode.clear()
+    await emailFieldInEditMode.fill('test@test.com')
+    await page.locator('.nb-checkmark').click()
+    await expect(targetRowById.locator('td').nth(5)).toHaveText('test@test.com')
 })
