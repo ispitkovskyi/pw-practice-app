@@ -150,7 +150,7 @@ test('web tables part 1', async ({page}) => {
     await ageFieldInEditMode.fill('35')
     await page.locator('.nb-checkmark').click()
 
-    // select a row by ID=11 on page #2
+    // 2 select a row by ID=11 on page #2
     await page.locator("nav[class*='ng2-smart-pagination-nav']").getByText('2').click()
     const targetRowById = page.getByRole('table')
                                 .getByRole('row', {name: '11'}) // returns 2 rows with text '11'
@@ -164,4 +164,68 @@ test('web tables part 1', async ({page}) => {
     await emailFieldInEditMode.fill('test@test.com')
     await page.locator('.nb-checkmark').click()
     await expect(targetRowById.locator('td').nth(5)).toHaveText('test@test.com')
+
+    // 3 test filter of the table
+    const ages = ["20", "30", "40", "200"]
+    const ageFilterField = page.getByRole('table').locator('input-filter').getByPlaceholder('Age')
+    for(let age of ages){
+        await ageFilterField.clear()
+        await ageFilterField.fill(age)
+        // IMPORTANT: Because Playwright runs fast, we need a delay after the filter value was entered
+        // and before the content of table is loaded (according to the filter value specified)
+        // await page.waitForTimeout(500)
+        await page.locator(`default-table-filter[ng-reflect-query='${age}']`).waitFor({state: 'attached'})
+        const filteredRows = page.locator('tbody tr')
+        for(let row of await filteredRows.all()) {
+            const cellValue = await row.locator('td').last().textContent()
+            if (age != "200") {
+                expect(cellValue).toEqual(age)
+            } else {
+                expect(await page.getByRole('table').textContent()).toContain('No data found')
+            }
+        }
+    }
+})
+
+test('date picker', async({page}) => {
+    await page.getByText('Forms').click()
+    await page.getByText('Datepicker').click()
+
+    const calendarInpuField = page.getByPlaceholder('Form Picker')
+
+    await calendarInpuField.click()
+    await page.locator("[class='day-cell ng-star-inserted']").getByText('14').click()
+    await calendarInpuField.click()
+    await page.locator("[class='day-cell ng-star-inserted']").getByText('1', {exact: true}).click()
+    await expect(calendarInpuField).toHaveValue('Jul 1, 2024')
+})
+
+test('date picker using Date object', async({page}) => {
+    await page.getByText('Forms').click()
+    await page.getByText('Datepicker').click()
+
+    const calendarInpuField = page.getByPlaceholder('Form Picker')
+    await calendarInpuField.click()
+
+    // working with JavaScript Date type
+    let date = new Date()
+    date.setDate(date.getDate() + 200) // set date relatively of today
+
+    const expectedDate = date.getDate().toString() //expected date
+    const expectedMonthShort = date.toLocaleString('En-US', {month: 'short'}) // month of the expected date (short form)
+    const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'}) // month of the expected date (long form)
+    const expectedYear = date.getFullYear()                                 // year of the expected date
+    const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`
+
+    let calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+    const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear} `
+
+    while(!calendarMonthAndYear.includes(expectedMonthAndYear)) {
+        await page.locator('nb-calendar-pageable-navigation [data-name="chevron-right"]').click()
+        calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+    }
+
+    await calendarInpuField.click()
+    await page.locator("[class='day-cell ng-star-inserted']").getByText(expectedDate, {exact: true}).click()
+    await expect(calendarInpuField).toHaveValue(dateToAssert)
 })
