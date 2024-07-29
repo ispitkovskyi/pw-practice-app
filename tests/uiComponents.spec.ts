@@ -229,3 +229,30 @@ test('date picker using Date object', async({page}) => {
     await page.locator("[class='day-cell ng-star-inserted']").getByText(expectedDate, {exact: true}).click()
     await expect(calendarInpuField).toHaveValue(dateToAssert)
 })
+
+test('sliders', async({page}) => {
+    // change position of slider by setting x, y attributes of it
+    const tempGauge = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger circle')
+    // evaluation of JS expression
+    await tempGauge.evaluate(node => {
+        node.setAttribute('cx', '270.955')
+        node.setAttribute('cy', '143.429')
+    })
+    await tempGauge.click() // trigger the event to update elem on page
+
+    // mouse move
+    const draggerBox = page.locator('[tabtitle="Temperature"] ngx-temperature-dragger')
+    await draggerBox.scrollIntoViewIfNeeded()
+
+    const box = await draggerBox.boundingBox() // playwright create a coordinates around box, which represents web element
+    // center of the box
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+
+    await page.mouse.move(x, y) // put mouse to the center of the box
+    await page.mouse.down()  // press Left Button on the coordinates above
+    await page.mouse.move(x + 100, y) // move horizontally
+    await page.mouse.move(x + 100, y + 100) // move vertically down
+    await page.mouse.up()  // releae Left Mouse moust button
+    await expect(draggerBox).toContainText('30')
+})
