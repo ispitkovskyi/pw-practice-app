@@ -1,16 +1,16 @@
 import {Page} from "@playwright/test";
+import { HelperBase } from "./helperBase";
 
-export class NavigationPage {  // export is required in order to make this class visible for imports in other files
-
-    readonly page: Page
+export class NavigationPage extends HelperBase{  // export is required in order to make this class visible for imports in other files
 
     constructor(page: Page){  // ': Page' - is the TypeScript way to specify a type of an argument
-        this.page = page
+        super(page) // call constructor of the super-class
     }
 
     async formLayoutsPage(){
         await this.selectGroupMenuItem('Forms')
         await this.page.getByText('Form Layouts').click()
+        await this.waitForSeconds(2) // function from the SUPER-CLASS
     }
 
     async datepickerPage(){
