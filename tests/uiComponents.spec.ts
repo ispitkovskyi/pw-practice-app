@@ -6,13 +6,19 @@ test.beforeEach(async({page}) => {
 })
 
 // Test
-test.describe('Form Layouts page', () => {
+test.describe.only('Form Layouts page', () => {
+    test.describe.configure({retries: 2})
+
     test.beforeEach(async({page}) => {
         await page.getByText('Forms').click()
         await page.getByText('Form Layouts').click()
     })
 
-    test('input fields', async ({page}) => {
+    test('input fields', async ({page}, testInfo) => {
+        if(testInfo.retry){
+            // run precondition code
+        }
+
         const usingTheGridEmailInput = page.locator('nb-card', {hasText: 'Using the Grid'}).getByRole('textbox', {name: 'Email'})
         
         await usingTheGridEmailInput.fill('test@test.com')
@@ -21,7 +27,7 @@ test.describe('Form Layouts page', () => {
 
         // generic assertion
         const inputValue = await usingTheGridEmailInput.inputValue();
-        expect(inputValue).toEqual('test2@test.com')
+        expect(inputValue).toEqual('test2@test.com1')
 
         await usingTheGridEmailInput.clear()
         await usingTheGridEmailInput.pressSequentially("test3@test.com", {delay: 500})
