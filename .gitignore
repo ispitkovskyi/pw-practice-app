@@ -45,3 +45,4 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 /screenshots/
+# .env
