@@ -2,7 +2,7 @@ import {expect} from '@playwright/test'
 import {test} from '../test-options'
 
 test('drag and drop with iframe', async({page, globalsQaURL}) => {
-    await page.goto(globalsQaURL)
+    await page.goto(globalsQaURL) // see test-options.ts and playwright.config.ts using TestOptions
 
     // drag by using .dragTo() method
     const frame = page.frameLocator('[rel-title="Photo Manager"] iframe') // locator of iframe
