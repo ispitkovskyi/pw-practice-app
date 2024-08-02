@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test'
 
 // Before test (this is a Hook)
 test.beforeEach(async({page}) => {
-    await page.goto('http://localhost:4200/')
+    await page.goto('/')  // ('/') - means, that PW needs to look for baseURL env variable inside playwright.config.ts
 })
 
 // Test
