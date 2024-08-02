@@ -22,8 +22,12 @@ test('parameterized methods', async({page}) => {
     const randomEmail = `${randomFullName.replace(' ', '')}${faker.number.int(1000)}@test.com`
 
     await pm.navigateTo().formLayoutsPage()
-    await pm.onFormLayoutsPage().submitUsingTheGridFormWithCredentialsAndSelectOption('test@test.com', 'Welcome1', 'Option 1')
+    await pm.onFormLayoutsPage().submitUsingTheGridFormWithCredentialsAndSelectOption('test@test.com', 'Welcome1', 'Option 2')
+    await page.screenshot({path: 'screenshots/formLayoutsPage.png'})
+    const buffer = await page.screenshot()
+    // console.log(buffer.toString('base64'))
     await pm.onFormLayoutsPage().submitInlineFormWithNameEmailAndCheckbox(randomFullName, randomEmail, true)
+    await page.locator('nb-card', {hasText: "Inline form"}).screenshot({path: 'screenshots/inlineForm.png'})
     await pm.navigateTo().datepickerPage()
     await pm.onDatePickerPage().selectCommonDatePickerDateFromToday(5)
     await pm.onDatePickerPage().selectCommonDatePickerWithRangeFromToday(5, 10)
