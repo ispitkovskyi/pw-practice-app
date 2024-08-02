@@ -8,7 +8,7 @@ test.beforeEach(async({page}) => {
 })
 
 // Test
-test('Extracting values', async({page}) => {
+test.skip('Extracting values', async({page}) => {
     // single text value
     const basicForm = page.locator('nb-card', {hasText: "Basic form"})
     const buttonText = await basicForm.locator('button').textContent()

@@ -1,9 +1,9 @@
 import {test} from '@playwright/test'
 
 // Before all tests (this is a Hook)
-test.beforeAll(async({page}) => {
-    console.log("Executed before all tests once")
-})
+// test.beforeAll(async({page}) => {
+//     console.log("Executed before all tests once")
+// })
 
 // Before test (this is a Hook)
 test.beforeEach(async({page}) => {
@@ -29,7 +29,7 @@ test.beforeEach(async({page}) => {
 test.describe('test suite 1', () => {
 // Before test (this is a Hook)
 test.beforeEach(async({page}) => {
-        await page.getByText('Charts').click()
+        await page.getByText('Forms').click()
     })
 
     // Test

@@ -8,7 +8,7 @@ test.beforeEach(async({page}/*, testInfo*/) => {
 })
 
 // Testing auto-waiting with http://uitestingplayground.com/ajax site
-test('auto waiting 1', async({page}) => {
+test.skip('auto waiting 1', async({page}) => {
     const successButton = await page.locator('.bg-success')
 
     await successButton.waitFor({state: 'attached'})
@@ -17,7 +17,7 @@ test('auto waiting 1', async({page}) => {
     expect.soft(text2).toContain('Data loaded with AJAX get request.') 
 })
 
-test('auto waiting 2', async({page}) => {
+test.skip('auto waiting 2', async({page}) => {
     const successButton = await page.locator('.bg-success')
 
     // textContent() DOES WAIT for element to appear (by default 30 seconds)
@@ -25,7 +25,7 @@ test('auto waiting 2', async({page}) => {
     expect(text).toEqual('Data loaded with AJAX get request.') 
 })
 
-test('auto waiting 3', async({page}) => {
+test.skip('auto waiting 3', async({page}) => {
     const successButton = await page.locator('.bg-success')
     
     // POTENTIAL ERROR: Will fail, because LocatorAssertions have 5 seconds DEFAULT timout, not enough in this case

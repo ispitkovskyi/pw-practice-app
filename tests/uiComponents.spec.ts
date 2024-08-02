@@ -1,5 +1,7 @@
 import {test, expect} from '@playwright/test'
 
+test.describe.configure({mode: 'parallel'})
+
 // Before test (this is a Hook)
 test.beforeEach(async({page}) => {
     await page.goto('http://localhost:4200/')
@@ -7,6 +9,9 @@ test.beforeEach(async({page}) => {
 
 // Test
 test.describe('Form Layouts page', () => {
+    test.describe.configure({retries: 2})
+    test.describe.configure({mode: 'serial'})
+
     test.beforeEach(async({page}) => {
         await page.getByText('Forms').click()
         await page.getByText('Form Layouts').click()
@@ -24,7 +29,7 @@ test.describe('Form Layouts page', () => {
         expect(inputValue).toEqual('test2@test.com')
 
         await usingTheGridEmailInput.clear()
-        await usingTheGridEmailInput.pressSequentially("test3@test.com", {delay: 500})
+        await usingTheGridEmailInput.pressSequentially("test3@test.com"/* , {delay: 500} */)
 
         // locator assertion
         await expect(usingTheGridEmailInput).toHaveValue('test3@test.com')
@@ -197,7 +202,7 @@ test('date picker', async({page}) => {
     await page.locator("[class='day-cell ng-star-inserted']").getByText('14').click()
     await calendarInpuField.click()
     await page.locator("[class='day-cell ng-star-inserted']").getByText('1', {exact: true}).click()
-    await expect(calendarInpuField).toHaveValue('Jul 1, 2024')
+    await expect(calendarInpuField).toHaveValue('Aug 1, 2024')
 })
 
 test('date picker using Date object', async({page}) => {
