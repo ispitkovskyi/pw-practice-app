@@ -71,6 +71,14 @@ export default defineConfig<TestOptions>({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
+    {
+      name: 'mobile',
+      testMatch: 'testMobile.spec.ts',
+      use: {
+        ...devices['iPhone 13 Pro']
+        // viewport: {width: 414, height: 800} // Alternative to specifying the device model
+      }
+    },
 
     /* Test against mobile viewports. */
     // {
