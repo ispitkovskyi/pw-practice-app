@@ -7,7 +7,7 @@ test.beforeEach(async({page}) => {
     await page.goto('/') // ('/') - means, that PW needs to look for baseURL env variable inside playwright.config.ts
 })
 
-test('navigate to form page', async({page}) => {
+test('navigate to form page @smoke @regression', async({page}) => {
     const pm: PageManager = new PageManager(page)
     await pm.navigateTo().formLayoutsPage()
     await pm.navigateTo().smartTablePage()
@@ -16,7 +16,7 @@ test('navigate to form page', async({page}) => {
     await pm.navigateTo().tooltipPage()
 })
 
-test('parameterized methods', async({page}) => {
+test('parameterized methods @smoke', async({page}) => {
     const pm = new PageManager(page)
     const randomFullName = faker.person.fullName({firstName: 'John'})
     const randomEmail = `${randomFullName.replace(' ', '')}${faker.number.int(1000)}@test.com`

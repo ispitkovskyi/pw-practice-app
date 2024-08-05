@@ -6,7 +6,7 @@ test.beforeEach(async({page}) => {
 })
 
 // Test
-test.describe('Form Layouts page', () => {
+test.describe('Form Layouts page @block', () => {
     test.beforeEach(async({page}) => {
         await page.getByText('Forms').click()
         await page.getByText('Form Layouts').click()
