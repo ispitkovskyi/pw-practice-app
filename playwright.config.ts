@@ -23,19 +23,19 @@ export default defineConfig<TestOptions>({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
 
-  expect: {
+/*   expect: {
     // timeout: 2000,
-    toMatchSnapshot: {maxDiffPixels: 50}
-  },
+    toMatchSnapshot: {maxDiffPixels: 150}
+  }, */
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-/*   reporter: [
+  // reporter: 'html',
+  reporter: [
     ['html'],
     ['json', {outputFile: 'test-results/jsonReport.json'}],
     ['junit', {outputFile: 'test-results/junitReport.xml'}], // Lots of CI/CD systems can read JUnit reports and publish them
-    ['allure-playwright']
-  ], */
+    // ['allure-playwright']
+  ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -113,6 +113,11 @@ export default defineConfig<TestOptions>({
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
+
+  webServer: {
+      command: 'npm run start',  // Run test application ('npm start')
+      url: 'http://localhost:4200'   // URL of the application under test
+  },
 
   /* Run your local dev server before starting the tests */
   // webServer: {
